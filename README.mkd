@@ -1,0 +1,10 @@
+# Django uMessages
+
+Django uMessages is a Django messaging application that allows users to
+send messages to each other. It's BSD licensed, which means you can use
+it commercially for free!
+
+# Credits
+django-umessages originated from django-userena. All the credits belong
+to:
+    * Petar Radosevic
