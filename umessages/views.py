@@ -23,7 +23,7 @@ class MessageListView(ListView):
     """
     page=1
     paginate_by=50
-    template_name=umessages/message_list.html'
+    template_name='umessages/message_list.html'
     extra_context={}
     context_object_name = 'message_list'
 
@@ -42,7 +42,7 @@ class MessageDetailListView(MessageListView):
     Returns a conversation between two users
 
     """
-    template_name=umessages/message_detail.html'
+    template_name='umessages/message_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super(MessageDetailListView, self).get_context_data(**kwargs)
@@ -69,7 +69,7 @@ class MessageDetailListView(MessageListView):
 
 @login_required
 def message_compose(request, recipients=None, compose_form=ComposeForm,
-                    success_url=None, template_name=umessages/message_form.html",
+                    success_url=None, template_name="umessages/message_form.html",
                     recipient_filter=None, extra_context=None):
     """
     Compose a new message
@@ -119,7 +119,7 @@ def message_compose(request, recipients=None, compose_form=ComposeForm,
             message = form.save(request.user)
             recipients = form.cleaned_data['to']
 
-            ifumessages_settings.UMESSAGES_USE_MESSAGES:
+            if umessages_settings.UMESSAGES_USE_MESSAGES:
                 messages.success(request, _('Message is sent.'),
                                  fail_silently=True)
 
@@ -127,11 +127,11 @@ def message_compose(request, recipients=None, compose_form=ComposeForm,
                                                      False)
 
             # Redirect mechanism
-            redirect_to = reverse(umessages_list')
+            redirect_to = reverse('umessages_list')
             if requested_redirect: redirect_to = requested_redirect
             elif success_url: redirect_to = success_url
             elif len(recipients) == 1:
-                redirect_to = reverse(umessages_detail',
+                redirect_to = reverse('umessages_detail',
                                       kwargs={'username': recipients[0].username})
             return redirect(redirect_to)
 
@@ -200,7 +200,7 @@ def message_remove(request, undo=False):
                 changed_message_list.add(message.pk)
 
         # Send messages
-        if (len(changed_message_list) > 0) andumessages_settings.UMESSAGES_USE_MESSAGES:
+        if (len(changed_message_list) > 0) and umessages_settings.UMESSAGES_USE_MESSAGES:
             if undo:
                 message = ungettext('Message is succesfully restored.',
                                     'Messages are succesfully restored.',
@@ -213,4 +213,4 @@ def message_remove(request, undo=False):
             messages.success(request, message, fail_silently=True)
 
     if redirect_to: return redirect(redirect_to)
-    else: return redirect(reverse(umessages_list'))
+    else: return redirect(reverse('umessages_list'))
