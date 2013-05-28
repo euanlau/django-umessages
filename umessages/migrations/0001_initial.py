@@ -7,53 +7,53 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
+
         # Adding model 'MessageContact'
-        db.create_table(umessages_messagecontact', (
+        db.create_table('umessages_messagecontact', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('from_user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='from_users', to=orm['auth.User'])),
             ('to_user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='to_users', to=orm['auth.User'])),
-            ('latest_message', self.gf('django.db.models.fields.related.ForeignKey')(to=orm[umessages.Message'])),
+            ('latest_message', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['umessages.Message'])),
         ))
-        db.send_create_signal(umessages', ['MessageContact'])
+        db.send_create_signal('umessages', ['MessageContact'])
 
         # Adding unique constraint on 'MessageContact', fields ['from_user', 'to_user']
-        db.create_unique(umessages_messagecontact', ['from_user_id', 'to_user_id'])
+        db.create_unique('umessages_messagecontact', ['from_user_id', 'to_user_id'])
 
         # Adding model 'MessageRecipient'
-        db.create_table(umessages_messagerecipient', (
+        db.create_table('umessages_messagerecipient', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('message', self.gf('django.db.models.fields.related.ForeignKey')(to=orm[umessages.Message'])),
+            ('message', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['umessages.Message'])),
             ('read_at', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
             ('deleted_at', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
         ))
-        db.send_create_signal(umessages', ['MessageRecipient'])
+        db.send_create_signal('umessages', ['MessageRecipient'])
 
         # Adding model 'Message'
-        db.create_table(umessages_message', (
+        db.create_table('umessages_message', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('body', self.gf('django.db.models.fields.TextField')()),
             ('sender', self.gf('django.db.models.fields.related.ForeignKey')(related_name='sent_messages', to=orm['auth.User'])),
             ('sent_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('sender_deleted_at', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
         ))
-        db.send_create_signal(umessages', ['Message'])
+        db.send_create_signal('umessages', ['Message'])
 
 
     def backwards(self, orm):
-        
+
         # Removing unique constraint on 'MessageContact', fields ['from_user', 'to_user']
-        db.delete_unique(umessages_messagecontact', ['from_user_id', 'to_user_id'])
+        db.delete_unique('umessages_messagecontact', ['from_user_id', 'to_user_id'])
 
         # Deleting model 'MessageContact'
-        db.delete_table(umessages_messagecontact')
+        db.delete_table('umessages_messagecontact')
 
         # Deleting model 'MessageRecipient'
-        db.delete_table(umessages_messagerecipient')
+        db.delete_table('umessages_messagerecipient')
 
         # Deleting model 'Message'
-        db.delete_table(umessages_message')
+        db.delete_table('umessages_message')
 
 
     models = {
@@ -93,30 +93,30 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        umessages.message': {
+        'umessages.message': {
             'Meta': {'ordering': "['-sent_at']", 'object_name': 'Message'},
             'body': ('django.db.models.fields.TextField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'recipients': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'received_messages'", 'symmetrical': 'False', 'through': "orm[umessages.MessageRecipient']", 'to': "orm['auth.User']"}),
+            'recipients': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'received_messages'", 'symmetrical': 'False', 'through': "orm['umessages.MessageRecipient']", 'to': "orm['auth.User']"}),
             'sender': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'sent_messages'", 'to': "orm['auth.User']"}),
             'sender_deleted_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'sent_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'})
         },
-        umessages.messagecontact': {
+        'umessages.messagecontact': {
             'Meta': {'ordering': "['latest_message']", 'unique_together': "(('from_user', 'to_user'),)", 'object_name': 'MessageContact'},
             'from_user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'from_users'", 'to': "orm['auth.User']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'latest_message': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm[umessages.Message']"}),
+            'latest_message': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['umessages.Message']"}),
             'to_user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'to_users'", 'to': "orm['auth.User']"})
         },
-        umessages.messagerecipient': {
+        'umessages.messagerecipient': {
             'Meta': {'object_name': 'MessageRecipient'},
             'deleted_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'message': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm[umessages.Message']"}),
+            'message': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['umessages.Message']"}),
             'read_at': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
         }
     }
 
-    complete_apps = [umessages']
+    complete_apps = ['umessages']
