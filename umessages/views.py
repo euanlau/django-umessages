@@ -117,7 +117,7 @@ def message_compose(request, recipients=None, compose_form=ComposeForm,
             requested_redirect = request.REQUEST.get("next", False)
 
             message = form.save(request.user)
-            recipients = form.cleaned_data['to']
+            recipients = message.recipients.all()
 
             if umessages_settings.UMESSAGES_USE_MESSAGES:
                 messages.success(request, _('Message is sent.'),
