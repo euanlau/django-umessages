@@ -71,7 +71,7 @@ class MessageFormNode(BaseMessageNode):
         if self.to_user:
             try:
                 user = self.to_user.resolve(context)
-                form.fields['to'].initial = [user,]
+                form.fields['to'].initial = user
                 form.fields['to'].widget = forms.HiddenInput()
             except template.VariableDoesNotExist:
                 pass
