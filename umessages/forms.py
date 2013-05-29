@@ -1,16 +1,28 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse
+
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
 
 from umessages.fields import CommaSeparatedUserField
 from umessages.models import Message, MessageRecipient
-
-import datetime
 
 class ComposeForm(forms.Form):
     to = CommaSeparatedUserField(label=_("To"))
     body = forms.CharField(label=_("Message"),
                            widget=forms.Textarea({'class': 'message'}),
                            required=True)
+
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.form_id = 'compose-message-form'
+        self.helper.form_class = 'form-horizontal'
+        self.helper.form_method = 'post'
+        self.helper.form_action =  reverse('umessages_compose')
+        self.helper.add_input(Submit('submit', _('Send')))
+
+        super(ComposeForm, self).__init__(*args, **kwargs)
 
     def save(self, sender):
         """

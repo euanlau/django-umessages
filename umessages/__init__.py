@@ -56,4 +56,4 @@ def get_form():
     if get_message_app_name() != DEFAULT_MESSAGES_APP and hasattr(get_message_app(), "get_form"):
         return get_message_app().get_form()
     else:
-        return MessageForm
+        return ComposeForm
