@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
+from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
@@ -7,6 +8,7 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.views.generic.list import ListView
+from django.views.generic.edit import FormView
 
 from umessages.models import Message, MessageRecipient, MessageContact
 from umessages.forms import ComposeForm
@@ -66,11 +68,7 @@ class MessageDetailListView(MessageListView):
         now = get_datetime_now()
         unread_list.update(read_at=now)
 
-
-@login_required
-def message_compose(request, recipients=None, compose_form=ComposeForm,
-                    success_url=None, template_name="umessages/message_form.html",
-                    recipient_filter=None, extra_context=None):
+class MessageComposeFormView(FormView):
     """
     Compose a new message
 
@@ -103,42 +101,52 @@ def message_compose(request, recipients=None, compose_form=ComposeForm,
         The form that is used.
 
     """
-    initial_data = dict()
+    template_name = "umessages/message_form.html"
+    success_url = None
+    form_class = ComposeForm
+    recipients = None
+    recipient_filter = None
+    extra_context = {}
+    http_method_names = ['get', 'post', 'put']
 
-    if recipients:
-        username_list = [r.strip() for r in recipients.split("+")]
-        recipients = [u for u in get_user_model().objects.filter(username__in=username_list)]
-        initial_data["to"] = recipients
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(MessageComposeFormView, self).dispatch(request, *args, **kwargs)
 
-    form = compose_form(initial=initial_data)
-    if request.method == "POST":
-        form = compose_form(request.POST)
-        if form.is_valid():
-            requested_redirect = request.REQUEST.get("next", False)
+    def get_initial(self):
+        initial = super(MessageComposeFormView, self).get_initial()
+        if self.recipients:
+            username_list = [r.strip() for r in self.recipients.split("+")]
+            recipients = [u for u in get_user_model().objects.filter(username__in=username_list)]
+            initial["to"] = recipients
+        return initial
 
-            message = form.save(request.user)
-            recipients = message.recipients.all()
+    def get_success_url(self):
+        requested_redirect = self.request.REQUEST.get(REDIRECT_FIELD_NAME,
+                                                      False)
+        redirect_to = reverse('umessages_list')
+        if requested_redirect:
+            redirect_to = requested_redirect
+        elif self.success_url:
+            redirect_to = self.success_url
+        elif len(self.recipients) == 1:
+            redirect_to = reverse('umessages_detail',
+                                  kwargs={'username': self.recipients[0].username})
+        return redirect_to
 
-            if umessages_settings.UMESSAGES_USE_MESSAGES:
-                messages.success(request, _('Message is sent.'),
-                                 fail_silently=True)
+    def form_valid(self, form):
+        message = form.save(self.request.user)
+        self.recipients = message.recipients.all()
 
-            requested_redirect = request.REQUEST.get(REDIRECT_FIELD_NAME,
-                                                     False)
+        if umessages_settings.UMESSAGES_USE_MESSAGES:
+            messages.success(self.request, _('Message is sent.'),
+                             fail_silently=True)
+        return super(MessageComposeFormView, self).form_valid(form)
 
-            # Redirect mechanism
-            redirect_to = reverse('umessages_list')
-            if requested_redirect: redirect_to = requested_redirect
-            elif success_url: redirect_to = success_url
-            elif len(recipients) == 1:
-                redirect_to = reverse('umessages_detail',
-                                      kwargs={'username': recipients[0].username})
-            return redirect(redirect_to)
-
-    if not extra_context: extra_context = dict()
-    extra_context["form"] = form
-    extra_context["recipients"] = recipients
-    return render(request, template_name, extra_context)
+    def get_context_data(self, **kwargs):
+        context = super(MessageComposeFormView, self).get_context_data(**kwargs)
+        context.update(self.extra_context)
+        return context
 
 @login_required
 @require_http_methods(["POST"])
@@ -162,7 +170,7 @@ def message_remove(request, undo=False):
 
     """
     message_pks = request.POST.getlist('message_pks')
-    redirect_to = request.REQUEST.get('next', False)
+    redirect_to = request.REQUEST.get(REDIRECT_FIELD_NAME, False)
 
     if message_pks:
         # Check that all values are integers.

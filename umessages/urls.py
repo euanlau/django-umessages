@@ -4,16 +4,12 @@ from django.contrib.auth.decorators import login_required
 
 urlpatterns = patterns('',
     url(r'^compose/$',
-        messages_views.message_compose,
+        messages_views.MessageComposeFormView.as_view(),
         name='umessages_compose'),
 
     url(r'^compose/(?P<recipients>[\+\.\w]+)/$',
-        messages_views.message_compose,
+        messages_views.MessageComposeFormView.as_view(),
         name='umessages_compose_to'),
-
-    url(r'^reply/(?P<parent_id>[\d]+)/$',
-        messages_views.message_compose,
-        name='umessages_reply'),
 
     url(r'^view/(?P<username>[\.\w]+)/$',
         login_required(messages_views.MessageDetailListView.as_view()),
