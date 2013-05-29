@@ -8,7 +8,7 @@
 {% get_unread_message_count_for user as unread_message_count %}
 {% blocktrans %}{{ unread_message_count }} new messages.{% endblocktrans %}
 <a href="{% url 'umessages_compose' %}">{% trans "Compose" %}</a>
-<ul>
+<ul class="messages-list">
   {% for message in message_list %}
   <li>
   {% if message.from_user == user %}
