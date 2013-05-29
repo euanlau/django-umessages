@@ -11,7 +11,7 @@ from django.views.generic.list import ListView
 from umessages.models import Message, MessageRecipient, MessageContact
 from umessages.forms import ComposeForm
 from umessages.utils import get_datetime_now, get_user_model
-from umessages import settings as umessages_settings
+from umessages import appsettings as umessages_settings
 
 class MessageListView(ListView):
     """
