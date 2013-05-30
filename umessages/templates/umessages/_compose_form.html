@@ -1,0 +1,9 @@
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load fluent_comments_tags %}
+
+{% crispy form %}
+
+<span id="message-waiting" style="display: none;">
+  <img src="{{ STATIC_URL }}fluent_comments/img/ajax-wait.gif" alt="" class="ajax-loader" />{% trans "Please wait . . ." %}
+</span>

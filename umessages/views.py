@@ -9,6 +9,11 @@ from django.utils.translation import ungettext
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.views.generic.list import ListView
 from django.views.generic.edit import FormView
+from django.template.loader import render_to_string
+from django.template import RequestContext
+
+from braces.views import AjaxResponseMixin
+from braces.views import JSONResponseMixin
 
 from umessages.models import Message, MessageRecipient, MessageContact
 from umessages.forms import ComposeForm
@@ -132,6 +137,8 @@ class MessageComposeFormView(FormView):
         elif len(self.recipients) == 1:
             redirect_to = reverse('umessages_detail',
                                   kwargs={'username': self.recipients[0].username})
+
+        print redirect_to
         return redirect_to
 
     def form_valid(self, form):
@@ -147,6 +154,48 @@ class MessageComposeFormView(FormView):
         context = super(MessageComposeFormView, self).get_context_data(**kwargs)
         context.update(self.extra_context)
         return context
+
+class MessageComposeAjaxFormView(JSONResponseMixin, AjaxResponseMixin, MessageComposeFormView):
+    http_method_names = ['post',]
+    new_element_template_name = 'umessages/_message.html'
+    def post_ajax(self, request, *args, **kwargs):
+        data = request.POST.copy()
+        action = self.request.method
+        success = True
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+
+        json_errors = {}
+        if form.errors:
+            for field_name in form.errors:
+                field = form[field_name]
+                json_errors[field_name] = _render_errors(field)
+            success = False
+
+        json_dict = {
+            'success': success,
+            'action': action,
+            'errors': json_errors,
+        }
+
+        message = form.save(self.request.user)
+
+        if message is not None:
+            context = {
+                'message' : message,
+                'action' : action
+            }
+
+            message_html = render_to_string('umessages/_message.html',
+                                            context,
+                                            context_instance=RequestContext(request))
+
+            json_dict.update({
+                'html': message_html,
+                'message_id':message.id
+            })
+
+        return self.render_json_response(json_dict)
 
 @login_required
 @require_http_methods(["POST"])

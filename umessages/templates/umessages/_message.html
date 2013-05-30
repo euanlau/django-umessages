@@ -1,0 +1,13 @@
+{% load humanize %}
+  <li class="media message-item" id="m{{ message.id }}">
+    <a class="pull-left" href="#">
+      <img class="media-object avatar" src="{{ MEDIA_URL }}{{ message.sender.avatar }}">
+    </a>
+    <div class="media-body">
+      <h5 class="media-heading">
+        <span class="message-sender">{{ message.sender }}</span>
+        <span class="pull-right message-date">{{ message.sent_at|naturalday|capfirst }}</span>
+      </h5>
+      <span class="message-text">{{ message }}</span>
+    </div>
+  </li>

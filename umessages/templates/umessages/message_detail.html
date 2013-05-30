@@ -1,16 +1,24 @@
 {% extends 'umessages/base_message.html' %}
+{% load i18n umessages_tags %}
 {% load i18n %}
+{% load crispy_forms_tags %}
 
-{% block content_title %}<h2>{% blocktrans %}Conversation with {{ recipient }}{% endblocktrans %}</h2>{% endblock %}
+{% block title %}{% blocktrans %}Conversation with {{ recipient }}{% endblocktrans %}{% endblock %}
 
-{% block content %}
+{% block yield %}
 
-<ul>
-{% for message in message_list %}
-<li>
-  {{ message }}
-  <p>{% blocktrans with message.sent_at as sent_at %}Received on {{ sent_at }}{% endblocktrans %}</p>
-</li>
+<div class="container">
+<div id="conversation-container">
+<h1> {% blocktrans %}Conversation with {{ recipient }}{% endblocktrans %} </h1>
+<ul class="media-list message-list">
+{% for message in message_list reversed %}
+{% include 'umessages/_message.html' %}
 {% endfor %}
 </ul>
+{% render_message_form to recipient.username %}
+</div>
+</div>
+
+
+
 {% endblock %}
