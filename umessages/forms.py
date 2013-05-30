@@ -22,7 +22,7 @@ class ComposeForm(forms.Form):
         self.helper.form_id = 'compose-message-form'
         self.helper.form_class = 'form-horizontal js-messages-form'
         self.helper.form_method = 'post'
-        self.helper.form_action =  reverse('umessages_compose')
+        self.helper.form_action =  reverse('umessages-compose')
         self.helper.attrs = {
             'data-ajax-action' : reverse('umessages-compose-ajax')
         }

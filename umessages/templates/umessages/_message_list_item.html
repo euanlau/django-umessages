@@ -3,7 +3,7 @@
 
 {% get_unread_message_count_between user and contact as unread_between_count %}
 
-<a href="{% url 'umessages_detail' contact %}">
+<a href="{% url 'umessages-detail' contact %}">
 <li {% if unread_between_count %}class="unread-message"{% endif %}>
 <span class="from">
 {{ contact }}

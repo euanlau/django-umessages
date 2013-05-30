@@ -20,15 +20,15 @@ class MessagesViewsTests(TestCase):
     def test_compose(self):
         """ A ``GET`` to the compose view """
         # Login is required.
-        self._test_login('userenaumessages_compose')
+        self._test_login('umessages-compose')
 
         # Sign in
         client = self.client.login(username='john', password='blowfish')
-        response = self.client.get(reverse('userenaumessages_compose'))
+        response = self.client.get(reverse('umessages-compose'))
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response,
-                                umessages/message_form.html')
+                                'umessages/message_form.html')
 
         self.failUnless(isinstance(response.context['form'],
                                    ComposeForm))
@@ -41,16 +41,16 @@ class MessagesViewsTests(TestCase):
                       'body': 'Hi'}
 
         # Check for a normal redirect
-        response = self.client.post(reverse('userenaumessages_compose'),
+        response = self.client.post(reverse('umessages-compose'),
                                     data=valid_data)
 
         self.assertRedirects(response,
-                             reverse('userenaumessages_detail',
+                             reverse('umessages-detail',
                                      kwargs={'username': 'john'}))
 
         # Check for a requested redirect
-        valid_data['next'] = reverse('userenaumessages_compose')
-        response = self.client.post(reverse('userenaumessages_compose'),
+        valid_data['next'] = reverse('umessages-compose')
+        response = self.client.post(reverse('umessages-compose'),
                                     data=valid_data)
         self.assertRedirects(response,
                              valid_data['next'])
@@ -63,7 +63,7 @@ class MessagesViewsTests(TestCase):
         invalid_recipients = "johny+jane"
 
         # Test valid recipients
-        response = self.client.get(reverse('userenaumessages_compose_to',
+        response = self.client.get(reverse('umessages-compose-to',
                                            kwargs={'recipients': valid_recipients}))
 
         self.assertEqual(response.status_code, 200)
@@ -80,18 +80,18 @@ class MessagesViewsTests(TestCase):
 
     def test_message_detail(self):
         """ A ``GET`` to the detail view """
-        self._test_login('userenaumessages_detail',
+        self._test_login('umessages-detail',
                           kwargs={'message_id': 2})
 
         # Sign in
         client = self.client.login(username='jane', password='blowfish')
-        response = self.client.get(reverse('userenaumessages_detail',
+        response = self.client.get(reverse('umessages-detail',
                                    kwargs={'message_id': 1}))
 
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response,
-                                umessages/message_detail.html')
+                                'umessages/message_detail.html')
 
         # Test that the message is read.
         jane = User.objects.get(pk=2)
@@ -102,31 +102,31 @@ class MessagesViewsTests(TestCase):
     def test_valid_message_remove(self):
         """ ``POST`` to remove a message """
         # Test that sign in is required
-        response = self.client.post(reverse('userenaumessages_remove'))
+        response = self.client.post(reverse('umessages-remove'))
         self.assertEqual(response.status_code, 302)
 
         # Sign in
         client = self.client.login(username='john', password='blowfish')
 
         # Test that only posts are allowed
-        response = self.client.get(reverse('userenaumessages_remove'))
+        response = self.client.get(reverse('umessages-remove'))
         self.assertEqual(response.status_code, 405)
 
         # Test a valid post to delete a senders message
-        response = self.client.post(reverse('userenaumessages_remove'),
+        response = self.client.post(reverse('umessages-remove'),
                                     data={'message_pks': '1'})
         self.assertRedirects(response,
-                             reverse('userenaumessages_list'))
+                             reverse('umessages-list'))
         msg = Message.objects.get(pk=1)
         self.failUnless(msg.sender_deleted_at)
 
         # Test a valid post to delete a recipients message and a redirect
         client = self.client.login(username='jane', password='blowfish')
-        response = self.client.post(reverse('userenaumessages_remove'),
+        response = self.client.post(reverse('umessages-remove'),
                                     data={'message_pks': '1',
-                                          'next': reverse('userenaumessages_list')})
+                                          'next': reverse('umessages-list')})
         self.assertRedirects(response,
-                             reverse('userenaumessages_list'))
+                             reverse('umessages-list'))
         jane = User.objects.get(username='jane')
         mr = msg.messagerecipient_set.get(user=jane,
                                           message=msg)
@@ -138,23 +138,23 @@ class MessagesViewsTests(TestCase):
         client = self.client.login(username='john', password='blowfish')
 
         bef_len = Message.objects.filter(sender_deleted_at__isnull=False).count()
-        response = self.client.post(reverse('userenaumessages_remove'),
+        response = self.client.post(reverse('umessages-remove'),
                                     data={'message_pks': ['a', 'b']})
 
         # The program should play nice, nothing happened.
         af_len = Message.objects.filter(sender_deleted_at__isnull=False).count()
         self.assertRedirects(response,
-                             reverse('userenaumessages_list'))
+                             reverse('umessages-list'))
         self.assertEqual(bef_len, af_len)
 
     def test_valid_message_remove_multiple(self):
         """ ``POST`` to remove multiple messages """
         # Sign in
         client = self.client.login(username='john', password='blowfish')
-        response = self.client.post(reverse('userenaumessages_remove'),
+        response = self.client.post(reverse('umessages-remove'),
                                     data={'message_pks': [1, 2]})
         self.assertRedirects(response,
-                             reverse('userenaumessages_list'))
+                             reverse('umessages-list'))
 
         # Message #1 and #2 should be deleted
         msg_list = Message.objects.filter(pk__in=['1','2'],
@@ -166,41 +166,41 @@ class MessagesViewsTests(TestCase):
         client = self.client.login(username='john', password='blowfish')
 
         # Delete a message as owner
-        response = self.client.post(reverse('userenaumessages_unremove'),
+        response = self.client.post(reverse('umessages-unremove'),
                                     data={'message_pks': [1,]})
 
         self.assertRedirects(response,
-                             reverse('userenaumessages_list'))
+                             reverse('umessages-list'))
 
         # Delete the message as a recipient
-        response = self.client.post(reverse('userenaumessages_unremove'),
+        response = self.client.post(reverse('umessages-unremove'),
                                     data={'message_pks': [2,]})
 
         self.assertRedirects(response,
-                             reverse('userenaumessages_list'))
+                             reverse('umessages-list'))
 
     def test_message_list(self):
         """ ``GET`` the message list for a user """
-        self._test_login("userenaumessages_list")
+        self._test_login("umessages-list")
 
         client = self.client.login(username="john", password="blowfish")
-        response = self.client.get(reverse("userenaumessages_list"))
+        response = self.client.get(reverse("umessages-list"))
         self.assertEqual(response.status_code, 200)
 
-        self.assertTemplateUsed(response, umessages/message_list.html")
+        self.assertTemplateUsed(response, "umessages/message_list.html")
 
     def test_message_detail(self):
         """ ``GET`` to a detail page between two users """
-        self._test_login("userenaumessages_detail",
+        self._test_login("umessages-detail",
                          kwargs={'username': "jane"})
         client = self.client.login(username='john', password='blowfish')
 
-        response = self.client.get(reverse("userenaumessages_detail",
+        response = self.client.get(reverse("umessages-detail",
                                            kwargs={'username': "jane"}))
 
         self.assertEqual(response.status_code, 200)
 
-        self.assertTemplateUsed(response, umessages/message_detail.html")
+        self.assertTemplateUsed(response, "umessages/message_detail.html")
 
         # Check that all the messages are marked as read.
         john = User.objects.get(pk=1)

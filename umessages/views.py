@@ -87,9 +87,9 @@ class MessageComposeFormView(FormView):
 
     :param success_url:
         String containing the named url which to redirect to after successfull
-        sending a message. Defaults to `umessages_list`` if there are
+        sending a message. Defaults to `umessages-list`` if there are
         multiple recipients. If there is only one recipient, will redirect to
-        `umessages_detail`` page, showing the conversation.
+        `umessages-detail`` page, showing the conversation.
 
     :param template_name:
         String containing the name of the template that is used.
@@ -129,13 +129,13 @@ class MessageComposeFormView(FormView):
     def get_success_url(self):
         requested_redirect = self.request.REQUEST.get(REDIRECT_FIELD_NAME,
                                                       False)
-        redirect_to = reverse('umessages_list')
+        redirect_to = reverse('umessages-list')
         if requested_redirect:
             redirect_to = requested_redirect
         elif self.success_url:
             redirect_to = self.success_url
         elif len(self.recipients) == 1:
-            redirect_to = reverse('umessages_detail',
+            redirect_to = reverse('umessages-detail',
                                   kwargs={'username': self.recipients[0].username})
 
         print redirect_to
@@ -270,4 +270,4 @@ def message_remove(request, undo=False):
             messages.success(request, message, fail_silently=True)
 
     if redirect_to: return redirect(redirect_to)
-    else: return redirect(reverse('umessages_list'))
+    else: return redirect(reverse('umessages-list'))

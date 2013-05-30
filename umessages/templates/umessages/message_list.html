@@ -9,7 +9,7 @@
 <h1>{% trans "Inbox" %}</h1>
 {% get_unread_message_count_for user as unread_message_count %}
 {% blocktrans %}{{ unread_message_count }} new messages.{% endblocktrans %}
-<a href="{% url 'umessages_compose' %}">{% trans "Compose" %}</a>
+<a href="{% url 'umessages-compose' %}">{% trans "Compose" %}</a>
 <ul class="message-thread-list">
   {% for message in message_list %}
 
