@@ -14,8 +14,6 @@ urlpatterns = patterns('',
         messages_views.MessageComposeFormView.as_view(),
         name='umessages_compose_to'),
 
-
-
     url(r'^view/(?P<username>[\.\w]+)/$',
         login_required(messages_views.MessageDetailListView.as_view()),
         name='umessages_detail'),

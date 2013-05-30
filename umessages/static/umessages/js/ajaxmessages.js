@@ -38,7 +38,7 @@
 
         // On load, scroll to proper message.
         var hash = window.location.hash;
-        if( hash.substring(0, 2) == "#c" )
+        if( hash.substring(0, 2) == "#m" )
         {
             var id = parseInt(hash.substring(2));
             if( ! isNaN(id))   // e.g. #messages in URL

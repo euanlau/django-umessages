@@ -2,10 +2,11 @@
 {% load i18n umessages_tags %}
 {% load url from future %}
 
-{% block title %}{% trans "Messages" %}{% endblock %}
+{% block title %}{% trans "Inbox" %}{% endblock %}
 
-{% block yield %}
+{% block content %}
 <div class="container">
+<h1>{% trans "Inbox" %}</h1>
 {% get_unread_message_count_for user as unread_message_count %}
 {% blocktrans %}{{ unread_message_count }} new messages.{% endblocktrans %}
 <a href="{% url 'umessages_compose' %}">{% trans "Compose" %}</a>
@@ -14,14 +15,14 @@
 
   {% if message.from_user == user %}
 
-  {% with message.to_user as partner %}
-  {% include 'umessages/thread_list_item.html' %}
+  {% with message.to_user as contact %}
+  {% include 'umessages/_message_list_item.html' %}
   {% endwith %}
 
   {% else %}
 
-  {% with message.from_user as partner %}
-  {% include 'umessages/thread_list_item.html' %}
+  {% with message.from_user as contact %}
+  {% include 'umessages/_message_list_item.html' %}
   {% endwith %}
 
   {% endif %}

@@ -1,12 +1,12 @@
 {% load i18n umessages_tags %}
 {% load url from future %}
 
-{% get_unread_message_count_between user and partner as unread_between_count %}
+{% get_unread_message_count_between user and contact as unread_between_count %}
 
-<a href="{% url 'umessages_detail' partner %}">
+<a href="{% url 'umessages_detail' contact %}">
 <li {% if unread_between_count %}class="unread-message"{% endif %}>
 <span class="from">
-{{ partner }}
+{{ contact }}
 </span>
 <span class="title">
 {% blocktrans with message.latest_message as latest_message %}{{ latest_message }} ({{ unread_between_count }} new){% endblocktrans %}

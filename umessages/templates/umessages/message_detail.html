@@ -1,11 +1,10 @@
 {% extends 'umessages/base_message.html' %}
 {% load i18n umessages_tags %}
-{% load i18n %}
 {% load crispy_forms_tags %}
 
 {% block title %}{% blocktrans %}Conversation with {{ recipient }}{% endblocktrans %}{% endblock %}
 
-{% block yield %}
+{% block content %}
 
 <div class="container">
 <div id="conversation-container">
