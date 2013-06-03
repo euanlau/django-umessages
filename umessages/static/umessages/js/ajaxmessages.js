@@ -6,11 +6,12 @@
     // Settings
     var MESSAGE_SCROLL_TOP_OFFSET = 40;
 
+    var DEBUG = false
 
     $.fn.ready(function()
     {
         var messageform = $('form.js-messages-form');
-        if( messageform.length > 0 )
+        if ( messageform.length > 0 )
         {
             // Detect last active input.
             // Submit if return is hit, or any button other then preview is hit.
@@ -18,6 +19,11 @@
             messageform.submit(onMessageFormSubmit);
         }
 
+        var productMessageLink = $('.product-details-container .message-action-link');
+        if (productMessageLink.length > 0)
+        {
+            productMessageLink.click(onMessageLinkClicked);
+        }
 
         // Find the element to use for scrolling.
         // This code is much shorter then jQuery.scrollTo()
@@ -64,6 +70,15 @@
         return false;
     }
 
+    function onMessageLinkClicked(event)
+    {
+        event.preventDefault();  // only after ajax call worked.
+        var link = event.target;
+        $('.product-details-container #compose-message-form').toggle('slow');
+
+        return false;
+    }
+
 
     function scrollToMessage(id, speed)
     {
@@ -89,7 +104,7 @@
     }
 
 
-    function onMessagePosted( message_id, is_moderated, $message )
+    function onMessagePosted( message_id, $message )
     {
         setTimeout(function(){ scrollToMessage(message_id, 1000); }, 1000);
     }
@@ -138,7 +153,7 @@
                     $added = messageSuccess(data);
 
                     if( onsuccess )
-                        args.onsuccess(data.message_id, data.is_moderated, $added);
+                        args.onsuccess(data.message_id, $added);
                 }
                 else {
                     messageFailure(data);
@@ -164,12 +179,17 @@
 
         // Show message
         var $messages = getMessagesDiv();
-        $messages.append(data['html']).removeClass('empty');
-        var $new_message = $messages.children("li.message-item:last");
+        if ($messages.length > 0 ) {
+            $messages.append(data['html']).removeClass('empty');
+            var $new_message = $messages.children("li.message-item:last");
 
-        // Smooth introduction to the new message.
-        $new_message.hide().show(600);
-
+            // Smooth introduction to the new message.
+            $new_message.hide().show(600);
+        }
+        else {
+            $('form.js-messages-form').fadeOut('slow').slideUp('slow');
+            $('.product-details-container .product-message-success').show('slow');
+        }
         return $new_message;
     }
 
@@ -196,8 +216,12 @@
     function getMessagesDiv()
     {
         var $messages = $("ul.message-list");
-        if( $messages.length == 0 )
-            alert("Internal error - unable to display message.\n\nreason: container is missing in the page.");
+        if( $messages.length == 0 ) {
+            if (DEBUG)
+                alert("Internal error - unable to display message.\n\nreason: container is missing in the page.");
+        }
+        else {
+        }
         return $messages;
     }
 

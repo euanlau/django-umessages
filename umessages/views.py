@@ -142,8 +142,8 @@ class MessageComposeFormView(FormView):
         return redirect_to
 
     def form_valid(self, form):
-        message = form.save(self.request.user)
-        self.recipients = message.recipients.all()
+        self.message = form.save(self.request.user)
+        self.recipients = self.message.recipients.all()
 
         if umessages_settings.UMESSAGES_USE_MESSAGES:
             messages.success(self.request, _('Message is sent.'),
