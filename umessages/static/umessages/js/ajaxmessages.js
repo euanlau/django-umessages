@@ -7,6 +7,7 @@
     var MESSAGE_SCROLL_TOP_OFFSET = 40;
 
     var DEBUG = false
+    var current_page = 1;
 
     $.fn.ready(function()
     {
@@ -23,6 +24,12 @@
         if (productMessageLink.length > 0)
         {
             productMessageLink.click(onMessageLinkClicked);
+        }
+
+        var showMoreLink = $('#conversation-container #show-more');
+        if (showMoreLink.length > 0)
+        {
+            showMoreLink.click(onShowMoreClicked);
         }
 
         // Find the element to use for scrolling.
@@ -52,6 +59,30 @@
         }
     });
 
+    function insertParam(url, key, value) {
+        key = escape(key); value = escape(value);
+
+        var kvp = url.substr(1).split('&');
+        if (kvp == '') {
+            url = '?' + key + '=' + value;
+        }
+        else {
+
+            var i = kvp.length; var x; while (i--) {
+                x = kvp[i].split('=');
+
+                if (x[0] == key) {
+                    x[1] = value;
+                    kvp[i] = x.join('=');
+                    break;
+                }
+            }
+
+            if (i < 0) { kvp[kvp.length] = [key, value].join('='); }
+            url = kvp.join('&');
+        }
+        return url
+    }
 
     function setActiveInput()
     {
@@ -73,12 +104,57 @@
     function onMessageLinkClicked(event)
     {
         event.preventDefault();  // only after ajax call worked.
-        var link = event.target;
         $('.product-details-container #compose-message-form').toggle('slow');
 
         return false;
     }
 
+    function onShowMoreClicked(event)
+    {
+        event.preventDefault();
+        var $link = $(event.target);
+        var ajaxurl = $link.attr('data-ajax-action');
+        ajaxurl = ajaxurl + '?page=' + (current_page+1);
+
+        // Use AJAX to post the message.
+        $.ajax({
+            type: 'GET',
+            url: ajaxurl,
+            dataType: 'json',
+            success: function(data) {
+                if (data.success) {
+                    showMoreSuccess(data);
+                }
+                else {
+                    messageFailure(data);
+                }
+            },
+            error: function(data) {
+                messageBusy = false;
+                removeWaitAnimation();
+
+                // Submit as non-ajax instead
+                //$form.unbind('submit').submit();
+            }
+        });
+        return false;
+    }
+
+
+    function showMoreSuccess(data)
+    {
+        // Show messages
+        var $messages = getMessagesDiv();
+        if ($messages.length > 0 ) {
+            $messages.prepend(data['html']).removeClass('empty');
+        }
+        if (data['last'] == true) {
+            $('.show-more-container').hide();
+        }
+
+        current_page +=1;
+        return;
+    }
 
     function scrollToMessage(id, speed)
     {
@@ -230,5 +306,7 @@
         // Remove the wait animation and message
         $('#message-waiting').hide().stop();
     }
+
+
 
 })(window.jQuery);

@@ -42,13 +42,14 @@ class MessageListView(ListView):
     def get_queryset(self):
         return MessageContact.objects.get_contacts_for(self.request.user)
 
-
 class MessageDetailListView(MessageListView):
     """
 
     Returns a conversation between two users
 
     """
+    paginate_by=10
+
     template_name='umessages/message_detail.html'
 
     def get_context_data(self, **kwargs):
@@ -72,6 +73,33 @@ class MessageDetailListView(MessageListView):
                                                   read_at__isnull=True)
         now = get_datetime_now()
         unread_list.update(read_at=now)
+
+
+class MessageDetailAjaxListView(JSONResponseMixin, AjaxResponseMixin, MessageDetailListView):
+    http_method_names = ['get',]
+    new_element_template_name = 'umessages/_message_detail_list.html'
+    def get_ajax(self, request, *args, **kwargs):
+        action = self.request.method
+        success = True
+        last = False
+
+        self.object_list = self.get_queryset()
+        context = self.get_context_data(object_list=self.object_list)
+
+        last = not context['page_obj'].has_next()
+
+        html = render_to_string(self.new_element_template_name,
+                                context,
+                                context_instance=RequestContext(request))
+
+        json_dict = {
+            'success': success,
+            'action': action,
+            'html' : html,
+            'last' : last,
+        }
+
+        return self.render_json_response(json_dict)
 
 class MessageComposeFormView(FormView):
     """
