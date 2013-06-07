@@ -5,6 +5,8 @@
 from django.conf import settings
 gettext = lambda s: s
 
+CRISPY_TEMPLATE_PACK = getattr(settings, 'CRISPY_TEMPLATE_PACK', 'bootstrap')
+
 """
 Boolean value that defines ifumessages should use the django messages
 framework to notify the user of any changes.
