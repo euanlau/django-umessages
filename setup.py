@@ -23,6 +23,7 @@ setup(name='django-umessages',
       packages = find_packages(exclude=['demo', 'demo.*']),
       include_package_data=True,
       install_requires = [
+	django-crispy-forms,
         ### Required to build documentation
         # 'sphinx',
         # 'south',
