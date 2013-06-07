@@ -5,8 +5,6 @@ Django messaging made easy.
 from django.conf import settings
 from django.core import urlresolvers
 from django.core.exceptions import ImproperlyConfigured
-from umessages.forms import ComposeForm
-
 from django.utils.importlib import import_module
 
 VERSION = (1, 0, 0)
@@ -56,4 +54,4 @@ def get_form():
     if get_message_app_name() != DEFAULT_MESSAGES_APP and hasattr(get_message_app(), "get_form"):
         return get_message_app().get_form()
     else:
-        return ComposeForm
+        return eval('umessages.forms.ComposeForm')
