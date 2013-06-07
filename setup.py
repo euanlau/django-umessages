@@ -13,15 +13,6 @@ except IOError, err:
 
 setup(name='django-umessages',
       version=umessages.get_version(),
-      description='User messaging application for Django',
-      long_description=long_description,
-      zip_safe=False,
-      author='Petar Radosevic, Euan Lau',
-      author_email='petar@wunki.org, euanlau@gmail.com',
-      url='https://github.com/euanlau/django-umessages/',
-      download_url='https://github.com/euanlau/django-umessages/downloads',
-      packages = find_packages(exclude=['demo', 'demo.*']),
-      include_package_data=True,
       install_requires = [
 	'django-crispy-forms>=1.1.1',
         ### Required to build documentation
@@ -31,6 +22,15 @@ setup(name='django-umessages',
       requires=[
         'Django (>=1.3)',   # Using staticfiles
       ],
+      description='User messaging application for Django',
+      long_description=long_description,
+      zip_safe=False,
+      author='Petar Radosevic, Euan Lau',
+      author_email='petar@wunki.org, euanlau@gmail.com',
+      url='https://github.com/euanlau/django-umessages/',
+      download_url='https://github.com/euanlau/django-umessages/downloads',
+      packages = find_packages(exclude=['demo', 'demo.*']),
+      include_package_data=True,
       test_suite='tests.main',
       classifiers = ['Development Status :: 4 - Beta',
                      'Environment :: Web Environment',
