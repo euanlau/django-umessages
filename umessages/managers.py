@@ -79,7 +79,7 @@ class MessageManager(models.Manager):
         # Save the recipients
         msg.save_recipients(to_user_list)
         msg.update_contacts(to_user_list)
-        signals.email_sent.send(sender=None,msg=msg)
+        signals.message_sent.send(sender=None,msg=msg)
 
         return msg
 
