@@ -15,6 +15,7 @@ from django.template import RequestContext
 from braces.views import AjaxResponseMixin
 from braces.views import JSONResponseMixin
 
+from umessages import signals
 from umessages.models import Message, MessageRecipient, MessageContact
 from umessages.forms import ComposeForm
 from umessages.utils import get_datetime_now, get_user_model
@@ -171,6 +172,11 @@ class MessageComposeFormView(FormView):
 
     def form_valid(self, form):
         self.message = form.save(self.request.user)
+        signals.message_sent.send(
+            sender=self.message.__class__ ,
+            message=self.message,
+            request=self.request)
+
         self.recipients = self.message.recipients.all()
 
         if umessages_settings.UMESSAGES_USE_MESSAGES:
@@ -207,6 +213,11 @@ class MessageComposeAjaxFormView(JSONResponseMixin, AjaxResponseMixin, MessageCo
         }
 
         message = form.save(self.request.user)
+        signals.message_sent.send(
+            sender=message.__class__,
+            message=message,
+            request=self.request
+        )
 
         if message is not None:
             context = {

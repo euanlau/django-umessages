@@ -1,7 +1,6 @@
 from django.db import models
 from django.db.models import Q
 
-from umessages import signals
 
 import datetime
 
@@ -79,7 +78,6 @@ class MessageManager(models.Manager):
         # Save the recipients
         msg.save_recipients(to_user_list)
         msg.update_contacts(to_user_list)
-        signals.message_sent.send(sender=None,msg=msg)
 
         return msg
 

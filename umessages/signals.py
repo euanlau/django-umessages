@@ -1,3 +1,3 @@
 from django.dispatch import Signal
 
-message_sent = Signal(providing_args=["msg"])
+message_sent = Signal(providing_args=["message", "request"])
