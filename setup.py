@@ -1,8 +1,6 @@
 from setuptools import setup, find_packages
 import sys
 
-umessages = __import__('umessages')
-
 readme_file = 'README.mkd'
 try:
     long_description = open(readme_file).read()
@@ -12,7 +10,7 @@ except IOError, err:
     sys.exit(1)
 
 setup(name='django-umessages',
-      version=umessages.get_version(),
+      version='1.0.0',
       install_requires = [
 	'django-crispy-forms>=1.1.1',
         ### Required to build documentation
