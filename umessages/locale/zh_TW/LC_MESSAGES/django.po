@@ -1,0 +1,160 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-06-28 12:00+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: admin.py:25
+msgid "Date/time"
+msgstr "日期／時間"
+
+#: fields.py:57
+#, python-format
+msgid "The following usernames are incorrect: %(users)s."
+msgstr "以下的用戶名不正確：%(users)s"
+
+#: forms.py:12
+msgid "To"
+msgstr ""
+
+#: forms.py:13
+msgid "Message"
+msgstr ""
+
+#: forms.py:16
+msgid "Write a new message..."
+msgstr "撰寫一個新信息"
+
+#: forms.py:29
+msgid "Send"
+msgstr "送出"
+
+#: models.py:17
+msgid "from user"
+msgstr "送件人"
+
+#: models.py:20
+msgid "to user"
+msgstr "收件人"
+
+#: models.py:24
+msgid "latest message"
+msgstr "最新信息"
+
+#: models.py:31
+msgid "contact"
+msgstr "聯絡人"
+
+#: models.py:32
+msgid "contacts"
+msgstr "聯絡人"
+
+#: models.py:35
+#, python-format
+msgid "%(from_user)s and %(to_user)s"
+msgstr "%(from_user)s 和 %(to_user)s"
+
+#: models.py:61 models.py:77
+msgid "recipient"
+msgstr "收件人"
+
+#: models.py:64 models.py:112
+msgid "message"
+msgstr "信息"
+
+#: models.py:66
+msgid "read at"
+msgstr "檢閱於"
+
+#: models.py:70
+msgid "recipient deleted at"
+msgstr "删除於"
+
+#: models.py:78 models.py:99
+msgid "recipients"
+msgstr "收件人"
+
+#: models.py:81
+#, python-format
+msgid "%(message)s"
+msgstr "%(message)s"
+
+#: models.py:90
+msgid "body"
+msgstr "正文"
+
+#: models.py:94
+msgid "sender"
+msgstr "送件人"
+
+#: models.py:101
+msgid "sent at"
+msgstr "送出"
+
+#: models.py:104
+msgid "sender deleted at"
+msgstr "删除於"
+
+#: models.py:113
+msgid "messages"
+msgstr "信息"
+
+#: views.py:183
+msgid "Message is sent."
+msgstr "信息已送出"
+
+#: views.py:301
+msgid "Message is succesfully restored."
+msgid_plural "Messages are succesfully restored."
+msgstr[0] "信息已修復"
+msgstr[1] "信息已修復"
+
+#: views.py:305
+msgid "Message is successfully removed."
+msgid_plural "Messages are successfully removed."
+msgstr[0] "成功删除信息"
+msgstr[1] "成功删除信息"
+
+#: templates/umessages/_compose_form.html:8
+msgid "Please wait . . ."
+msgstr "請等候⋯⋯"
+
+#: templates/umessages/_message_list_item.html:12
+#, python-format
+msgid "%(latest_message)s (%(unread_between_count)s new)"
+msgstr "%(latest_message)s (%(unread_between_count)s 新信息"
+
+#: templates/umessages/message_detail.html:5
+#: templates/umessages/message_detail.html:11
+#, python-format
+msgid "Conversation with %(recipient)s"
+msgstr "和 %(recipient)s 的通話"
+
+#: templates/umessages/message_form.html:6
+#: templates/umessages/message_list.html:12
+msgid "Compose"
+msgstr ""
+
+#: templates/umessages/message_list.html:5
+#: templates/umessages/message_list.html:9
+msgid "Inbox"
+msgstr "收件箱"
+
+#: templates/umessages/message_list.html:11
+#, python-format
+msgid "%(unread_message_count)s new messages."
+msgstr "%(unread_message_count)s 個新信息"
