@@ -1,6 +1,6 @@
-from django.conf.urls.defaults import *
-from umessages import views as messages_views
+from django.conf.urls import patterns, url, include
 from django.contrib.auth.decorators import login_required
+from umessages import views as messages_views
 
 urlpatterns = patterns('',
     url(r'^compose/$',
